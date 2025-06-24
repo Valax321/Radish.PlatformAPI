@@ -8,12 +8,38 @@ namespace Radish.PlatformAPI
     [PublicAPI]
     public interface IPlatformSaveData : IOptionalAPI
     {
+        public delegate void SaveDataDynamicChangeDelegate(IReadOnlyList<FileChange> changedFiles);
+
+        public class FileChange
+        {
+            public string name { get; }
+            public ChangeType type { get; }
+
+            public FileChange(string name, ChangeType type)
+            {
+                this.name = name;
+                this.type = type;
+            }
+        }
+
+        public enum ChangeType
+        {
+            Updated,
+            Deleted
+        }
+        
         [Flags, PublicAPI]
         public enum OpenMode
         {
             Read = 1 << 0,
             Write = 1 << 1,
         }
+        
+        #region Cloud Sync
+
+        public event SaveDataDynamicChangeDelegate onSaveDataChanged;
+        
+        #endregion
 
         #region User Data
 
@@ -68,7 +94,9 @@ namespace Radish.PlatformAPI
     internal class NullPlatformSaveDataImpl : IPlatformSaveData
     {
         public bool isSupported => false;
-        
+
+        public event IPlatformSaveData.SaveDataDynamicChangeDelegate onSaveDataChanged;
+
         public bool BeginDataWrite()
         {
             throw new NotImplementedException();

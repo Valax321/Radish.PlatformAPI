@@ -35,7 +35,9 @@ namespace Radish.PlatformAPI.DefaultAPIs
                 Logger.Exception(ex, "Failed to set up data directories");
             }
         }
-        
+
+        public event IPlatformSaveData.SaveDataDynamicChangeDelegate onSaveDataChanged;
+
         public bool BeginDataWrite()
         {
             return true;
