@@ -9,9 +9,13 @@ namespace Radish.PlatformAPI
     {
         public string name => nameof(StandalonePlatformSubsystem);
 
-        public IPlatformSaveData saveData { get; } = new PlatformSaveDataImplFileIO(
+        public IPlatformSaveData userData => m_SaveDataImpl;
+        public IPlatformSaveData localData => m_SaveDataImpl;
+        
+        // On standalone platforms the persistentDataPath is already in a user folder, so we can
+        // share the same path for both user and local data.
+        private IPlatformSaveData m_SaveDataImpl = new PlatformSaveDataImplFileIO(
             Application.persistentDataPath,
-            "local",
             "local"
         );
 

@@ -1,4 +1,3 @@
-using System;
 using System.IO;
 using JetBrains.Annotations;
 using Radish.PlatformAPI.DefaultAPIs;
@@ -10,13 +9,15 @@ namespace Radish.PlatformAPI
     {
         public string name => nameof(EditorPlatformSubsystem);
         
-        public IPlatformSaveData saveData { get; }
+        public IPlatformSaveData userData { get; }
+        public IPlatformSaveData localData { get; }
 
         public EditorPlatformSubsystem()
         {
-            Directory.CreateDirectory(Path.Combine(Directory.GetCurrentDirectory(), "SaveData"));
-            saveData = new PlatformSaveDataImplFileIO(Path.Combine(Directory.GetCurrentDirectory(), "SaveData"),
-                "local", Environment.UserName);
+            userData = new PlatformSaveDataImplFileIO(Path.Combine(Directory.GetCurrentDirectory(), "SaveData"),
+                "user");
+            localData = new PlatformSaveDataImplFileIO(Path.Combine(Directory.GetCurrentDirectory(), "SaveData"),
+                "local");
         }
 
         public bool Initialize() => true;

@@ -18,7 +18,12 @@ namespace Radish.PlatformAPI
         /// <summary>
         /// API for reading and writing save data that may be cloud sync'd.
         /// </summary>
-        public IPlatformSaveData saveData => new NullPlatformSaveDataImpl();
+        public IPlatformSaveData userData => new NullPlatformSaveDataImpl();
+
+        /// <summary>
+        /// API for reading and writing save data local to the system.
+        /// </summary>
+        public IPlatformSaveData localData => new NullPlatformSaveDataImpl();
 
         /// <summary>
         /// API for getting information about the currently playing user.

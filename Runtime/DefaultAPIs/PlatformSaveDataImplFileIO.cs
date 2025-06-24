@@ -17,20 +17,17 @@ namespace Radish.PlatformAPI.DefaultAPIs
     {
         private static readonly ILogger Logger = LogManager.GetLoggerForType(typeof(PlatformSaveDataImplFileIO));
         
-        private readonly string m_LocalPath;
         private readonly string m_UserPath;
         
-        public PlatformSaveDataImplFileIO(string rootDataPath, string localDirName, string userDirName)
+        public PlatformSaveDataImplFileIO(string rootDataPath, string userDirName)
         {
             if (!Directory.Exists(rootDataPath))
                 throw new DirectoryNotFoundException("Data root directory must exist before opening");
-
-            m_LocalPath = Path.Combine(rootDataPath, localDirName);
+            
             m_UserPath = Path.Combine(rootDataPath, userDirName);
 
             try
             {
-                Directory.CreateDirectory(m_LocalPath);
                 Directory.CreateDirectory(m_UserPath);
             }
             catch (Exception ex)
@@ -39,70 +36,17 @@ namespace Radish.PlatformAPI.DefaultAPIs
             }
         }
         
-        public Stream OpenLocalDataStream(string name, IPlatformSaveData.OpenMode mode)
-        {
-            FileAccess fm = 0;
-            if (mode.HasFlagT(IPlatformSaveData.OpenMode.Read))
-                fm = FileAccess.Read;
-            if (mode.HasFlagT(IPlatformSaveData.OpenMode.Write))
-                fm = fm == FileAccess.Read ? FileAccess.ReadWrite : FileAccess.Write;
-
-            if (fm == 0)
-                throw new IOException($"{nameof(mode)} must be either Read, Write or both");
-
-            try
-            {
-                var f = File.Open(Path.Combine(m_LocalPath, name), FileMode.OpenOrCreate, fm);
-                return f;
-            }
-            catch (Exception ex)
-            {
-                Logger.Exception(ex, "Failed to open '{0}'", name);
-                return null;
-            }
-        }
-
-        public bool DoesLocalDataExist(string name)
-        {
-            return File.Exists(Path.Combine(m_LocalPath, name));
-        }
-
-        public void DeleteLocalData(string name)
-        {
-            try
-            {
-                File.Delete(Path.Combine(m_LocalPath, name));
-            }
-            catch (Exception ex)
-            {
-                Logger.Exception(ex, "Failed to delete '{0}'", name);
-            }
-        }
-
-        public IEnumerable<string> GetLocalDataNames()
-        {
-            try
-            {
-                return Directory.EnumerateFiles(m_LocalPath);
-            }
-            catch (Exception ex)
-            {
-                Logger.Exception(ex, "Failed to get data names");
-                return Enumerable.Empty<string>();
-            }
-        }
-
-        public bool BeginUserDataWrite()
+        public bool BeginDataWrite()
         {
             return true;
         }
 
-        public bool EndUserDataWrite()
+        public bool EndDataWrite()
         {
             return true;
         }
 
-        public Stream OpenUserDataStream(string name, IPlatformSaveData.OpenMode mode)
+        public Stream OpenDataStream(string name, IPlatformSaveData.OpenMode mode)
         {
             FileAccess fm = 0;
             if (mode.HasFlagT(IPlatformSaveData.OpenMode.Read))
@@ -125,12 +69,12 @@ namespace Radish.PlatformAPI.DefaultAPIs
             }
         }
 
-        public bool DoesUserDataExist(string name)
+        public bool DoesDataExist(string name)
         {
             return File.Exists(Path.Combine(m_UserPath, name));
         }
 
-        public void DeleteUserData(string name)
+        public void DeleteData(string name)
         {
             try
             {
@@ -142,7 +86,7 @@ namespace Radish.PlatformAPI.DefaultAPIs
             }
         }
 
-        public IEnumerable<string> GetUserDataNames()
+        public IEnumerable<string> GetDataNames()
         {
             try
             {
