@@ -11,8 +11,8 @@ namespace Radish.PlatformAPI
 
         public IPlatformSaveData saveData { get; } = new PlatformSaveDataImplFileIO(
             Application.persistentDataPath,
-            "system",
-            "user"
+            "local",
+            "local"
         );
 
         public bool Initialize() => true;

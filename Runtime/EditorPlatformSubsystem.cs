@@ -3,8 +3,6 @@ using System.IO;
 using JetBrains.Annotations;
 using Radish.PlatformAPI.DefaultAPIs;
 
-#if UNITY_EDITOR
-
 namespace Radish.PlatformAPI
 {
     [PublicAPI]
@@ -18,7 +16,7 @@ namespace Radish.PlatformAPI
         {
             Directory.CreateDirectory(Path.Combine(Directory.GetCurrentDirectory(), "SaveData"));
             saveData = new PlatformSaveDataImplFileIO(Path.Combine(Directory.GetCurrentDirectory(), "SaveData"),
-                "system", Environment.UserName);
+                "local", Environment.UserName);
         }
 
         public bool Initialize() => true;
@@ -28,4 +26,3 @@ namespace Radish.PlatformAPI
         }
     }
 }
-#endif
