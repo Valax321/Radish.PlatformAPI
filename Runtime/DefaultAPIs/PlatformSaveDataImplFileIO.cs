@@ -92,6 +92,16 @@ namespace Radish.PlatformAPI.DefaultAPIs
             }
         }
 
+        public bool BeginUserDataWrite()
+        {
+            return true;
+        }
+
+        public bool EndUserDataWrite()
+        {
+            return true;
+        }
+
         public Stream OpenUserDataStream(string name, IPlatformSaveData.OpenMode mode)
         {
             FileAccess fm = 0;

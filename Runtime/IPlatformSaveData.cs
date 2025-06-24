@@ -56,6 +56,18 @@ namespace Radish.PlatformAPI
         #region User Data
 
         /// <summary>
+        /// Notifies the subsystem that we're about to begin writing user data.
+        /// Be sure to call <see cref="EndUserDataWrite"/> when all required files have been written.
+        /// </summary>
+        bool BeginUserDataWrite();
+
+        /// <summary>
+        /// Notifies the subsystem that we're done writing user data.
+        /// <seealso cref="BeginUserDataWrite"/>
+        /// </summary>
+        bool EndUserDataWrite();
+
+        /// <summary>
         /// Opens a <see cref="Stream"/> for save data that will be saved to the cloud if cloud save functionality is supported
         /// on the current platform.
         /// <remarks>Note: this will not necessarily be a file on disk!
@@ -112,6 +124,16 @@ namespace Radish.PlatformAPI
         }
 
         public IEnumerable<string> GetLocalDataNames()
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool BeginUserDataWrite()
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool EndUserDataWrite()
         {
             throw new NotImplementedException();
         }
