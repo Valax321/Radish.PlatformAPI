@@ -37,7 +37,7 @@ namespace Radish.PlatformAPI
         
         #region Cloud Sync
 
-        public event SaveDataDynamicChangeDelegate onSaveDataChanged;
+        public event SaveDataDynamicChangeDelegate OnSaveDataChanged;
         
         #endregion
 
@@ -95,7 +95,9 @@ namespace Radish.PlatformAPI
     {
         public bool isSupported => false;
 
-        public event IPlatformSaveData.SaveDataDynamicChangeDelegate onSaveDataChanged;
+        #pragma warning disable CS0067
+        public event IPlatformSaveData.SaveDataDynamicChangeDelegate OnSaveDataChanged;
+        #pragma warning restore CS0067
 
         public bool BeginDataWrite()
         {

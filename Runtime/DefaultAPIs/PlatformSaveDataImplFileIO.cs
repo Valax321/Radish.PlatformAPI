@@ -21,9 +21,6 @@ namespace Radish.PlatformAPI.DefaultAPIs
         
         public PlatformSaveDataImplFileIO(string rootDataPath, string userDirName)
         {
-            if (!Directory.Exists(rootDataPath))
-                throw new DirectoryNotFoundException("Data root directory must exist before opening");
-            
             m_UserPath = Path.Combine(rootDataPath, userDirName);
 
             try
@@ -36,7 +33,9 @@ namespace Radish.PlatformAPI.DefaultAPIs
             }
         }
 
-        public event IPlatformSaveData.SaveDataDynamicChangeDelegate onSaveDataChanged;
+#pragma warning disable CS0067
+        public event IPlatformSaveData.SaveDataDynamicChangeDelegate OnSaveDataChanged;
+#pragma warning restore CS0067
 
         public bool BeginDataWrite()
         {
@@ -50,23 +49,27 @@ namespace Radish.PlatformAPI.DefaultAPIs
 
         public Stream OpenDataStream(string name, IPlatformSaveData.OpenMode mode)
         {
-            FileAccess fm = 0;
+            FileAccess access = 0;
+            var fm = FileMode.Open;
             if (mode.HasFlagT(IPlatformSaveData.OpenMode.Read))
-                fm = FileAccess.Read;
+                access = FileAccess.Read;
             if (mode.HasFlagT(IPlatformSaveData.OpenMode.Write))
-                fm = fm == FileAccess.Read ? FileAccess.ReadWrite : FileAccess.Write;
+            {
+                access = access == FileAccess.Read ? FileAccess.ReadWrite : FileAccess.Write;
+                fm = FileMode.OpenOrCreate; // If we're writing we need to create the file if it's not there
+            }
 
-            if (fm == 0)
+            if (access == 0)
                 throw new IOException($"{nameof(mode)} must be either Read, Write or both");
 
             try
             {
-                var f = File.Open(Path.Combine(m_UserPath, name), FileMode.OpenOrCreate, fm);
+                var f = File.Open(Path.Combine(m_UserPath, name), fm, access);
                 return f;
             }
             catch (Exception ex)
             {
-                Logger.Exception(ex, "Failed to open '{0}'", name);
+                Logger.Warn("Failed to open '{0}': {1}", name, ex.Message);
                 return null;
             }
         }
